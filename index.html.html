@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para Silene ❤️</title>
+    <style>
+        :root {
+            --primary: #ffffff;
+            --glass-bg: rgba(0, 0, 0, 0.7);
+            --pink: #ff4d94;
+            --violet: #8a2be2;
+            --gold: #ffd700;
+        }
+
+        * { box-sizing: border-box; }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* --- PANTALLA DE REGALO --- */
+        #intro-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                        url('fondoregalo.jpg') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease;
+            padding: 20px;
+        }
+
+        .instruction {
+            color: white; font-size: 1.5rem; font-weight: bold;
+            margin-bottom: 2rem; text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        .gift-container { position: relative; cursor: pointer; width: 120px; height: 120px; }
+        .gift-box { position: absolute; bottom: 0; width: 100%; height: 80px; background: #f274fd; border-radius: 0 0 10px 10px; }
+        .gift-box::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 20px; height: 100%; background: var(--gold); }
+        .gift-lid { position: absolute; top: 15px; left: -5%; width: 110%; height: 30px; background: #750280; border-radius: 5px; z-index: 2; }
+
+        /* --- SECCIÓN DE CARTAS --- */
+        #letters-section {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('cartasfondo.jpg') center/cover no-repeat; 
+            background-color: #1a0a1a; 
+            z-index: 900;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            flex-direction: column;
+            transition: opacity 0.8s;
+        }
+
+        .letter-card {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+            display: none;
+            animation: slideUp 0.6s ease-out;
+            font-style: italic;
+            line-height: 1.6;
+            border: 2px solid var(--pink);
+        }
+
+        .letter-card.active { display: block; }
+
+        .letter-btn {
+            margin-top: 25px;
+            background: var(--pink);
+            border: none;
+            padding: 12px 30px;
+            color: white;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 77, 148, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .letter-btn:active { transform: scale(0.95); }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        #main-content {
+            display: none;
+            opacity: 0;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 15px;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('fondo1.jpg') center/cover no-repeat;
+        }
+
+        .xayah-gif { width: 160px; height: 160px; object-fit: cover; border-radius: 50%; border: 3px solid var(--pink); box-shadow: 0 0 20px var(--pink); margin-bottom: 20px; }
+        .main-title { font-size: 2.2rem; text-align: center; background: linear-gradient(to right, #ff4d94, #bc13fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0 25px 0; }
+        .layout-container { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 500px; }
+        
+        .card { background: var(--glass-bg); padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 77, 148, 0.3); backdrop-filter: blur(8px); text-align: center; }
+        
+        /* --- ESTILOS MEJORADOS PARA EL CONTADOR --- */
+        #contador { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 20px; 
+            margin: 20px 0;
+        }
+        
+        .unit span { 
+            font-size: 3rem; /* Tamaño más grande para los números */
+            color: var(--pink); 
+            display: block; 
+            font-weight: 800; 
+            text-shadow: 0 0 10px rgba(255, 77, 148, 0.5);
+            line-height: 1;
+        }
+        
+        .unit label { 
+            font-size: 1rem; /* Letras de unidades más legibles */
+            color: #efefef; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        .balloon { position: fixed; pointer-events: none; z-index: 2000; animation: floatUp 4s linear forwards; }
+        @keyframes floatUp { from { transform: translateY(100vh) scale(0.5); opacity: 1; } to { transform: translateY(-10vh) scale(1.5); opacity: 0; } }
+
+        #bears-animation { display: none; position: relative; width: 100%; height: 150px; margin-top: 20px; overflow: hidden; }
+        .bear { position: absolute; font-size: 2rem; bottom: 10px; }
+        #bear-left { left: 10%; transform: scaleX(-1); }
+        #bear-right { right: 10%; }
+        .shooting-heart { position: absolute; bottom: 30px; font-size: 1.2rem; z-index: 5; }
+        #te-amo-text { position: absolute; top: 20%; left: 50%; transform: translate(-50%, -50%); font-size: 2rem; font-weight: bold; color: var(--pink); opacity: 0; text-shadow: 0 0 10px var(--pink); white-space: nowrap; }
+
+        @media (min-width: 900px) {
+            .layout-container { display: grid; grid-template-columns: 1fr 1.5fr 1fr; max-width: 1200px; }
+            .main-title { font-size: 3.5rem; }
+            #contador { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+            .unit span { font-size: 3.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<audio id="musicaAmor" loop>
+    <source src="Princesa.mp.mp3" type="audio/mp3">
+</audio>
+
+<div id="intro-screen">
+    <div class="instruction">🎁 Para mi estrellita ⭐<br><small style="font-size: 0.9rem; opacity: 0.8;">🖤 Feliz San Valentín 🖤</small></div>
+    <div class="gift-container" onclick="openGift()">
+        <div class="gift-lid"></div>
+        <div class="gift-box"></div>
+    </div>
+</div>
+
+<div id="letters-section">
+    <div class="letter-card active" id="l1">
+        <h3 style="color: var(--pink); margin-top: 0;">Carta #1: El Comienzo ✨</h3>
+        <p>"Mi flaca hermosa, ¿quién diría que una partida de Valorant haria que encuentre al amor de mi vida? Al principio estaba tilteado por que no tirabas el muro te enseñe ganamos y me agregaste al pasar los dias volvimos a jugar y desde ese dia no nos separamos mas que bonito. Empezamos a jugar juntitos y al a way out creo que jugando ese juego te hiciste apreciar demasiado me di cuenta que pasar hs con vos era bonito y diferente al resto. Empezamos a pasar tiempo juntos te enseñe a jugar valorant fortnite y otros juegos. Amo compartir todo juntos asi empezo todo este amor que durara mucho mi amor. Te Amo Mi ESTRELLITA⭐"</p>
+        <button class="letter-btn" onclick="nextLetter(1)">Leer siguiente</button>
+    </div>
+    <div class="letter-card" id="l2">
+        <h3 style="color: var(--pink); margin-top: 0;">Carta #2: Lo que siento ❤️</h3>
+        <p>"A tu lado aprendí que no importa la distancia si la conexión y lo que sentimos es real. Tu risa, tus chistes, tus enojos, tus jugadas, tus mimos, tu forma de ser y todo de vos hizo que te ame de esta manera corazon te juro que sos mi lugar seguro mi pasa tiempo favorito sos la mujer que siempre quise. Tenes todo lo que me encanta flaca linda no te das una idea lo importante que sos para mi⭐ Perdon si muchas veces soy orgulloso y enojon pero te juro que apesar de todo quiero estar siempre a tu lado. Se que como vos no existen dos sos tan unica y perfecta mi bolivianita linda TE AMO SILENE Mas que ayer menos que mañana❤️ Ojala siempre nos amemos de esta manera gracias por tanto. Estoy re enamorado de vos te juro imposible no estarlo si sos PERFECTA FLACA❤️ "</p>
+        <button class="letter-btn" onclick="nextLetter(2)">Seguir leyendo</button>
+    </div>
+    <div class="letter-card" id="l3">
+        <h3 style="color: var(--pink); margin-top: 0;">Carta #3: ❤️Feliz San valentin⭐</h3>
+        <p>"Gracias por elegirme cada día, gracias por otro 14 juntos! Un año mas y un san valentin más ojala sean muchos mas❤️ ¿Queres ser mi novia? ommm Te amo demasiado flaca gracias x tanto TE AMO DE VERDAD"❤️ Gracias por presentarme a tu familia gracias por apesar de la distancia haces todo para que sigamos unido TE AMO MI ESTRELLITA LINDA❤️</p>
+        <button class="letter-btn" onclick="showFinalContent()">¿Sabes cuántos días llevamos juntos?❤️</button>
+    </div>
+</div>
+
+<div id="main-content">
+    <img src="animado gif.gif" alt="Xayah" class="xayah-gif">
+    <h1 class="main-title">⭐ B & S ⭐</h1>
+    <div id="bears-animation">
+        <div id="bear-left" class="bear">🧸</div>
+        <div id="bear-right" class="bear">🧸</div>
+        <div id="te-amo-text">❤️ TE AMO MÁS QUE AYER MENOS QUE MAÑANA ❤️</div>
+    </div>
+    <div class="layout-container">
+        <div class="card">
+            <h3 style="color: var(--pink); margin-top: 0;">Mi estrellita ✨</h3>
+            <p style="font-size: 0.95rem; line-height: 1.4;">Aqui tenes el contador desde que esta linda relacion empezo asi nunca te olvides cuantos dias vamos❤️ Te juro que te hiciste amar una locura flaca me encanto conocerte en persona tu risa tu manera de molestar lo mimosa y pegosa que sos❤️ ame el primer abrazo todo tosco jaja los besitos agarrar tu cinturita mirarte como tontito❤️ Que vengas a las mañanas abrazarme hacerte enojar haciendote bromitas mimarte estar con vos en todos lados❤️ No me arrepiento de haber ido a conocerte fue lo mejor que me paso! lo mejor que hice por AMOR quiero dar todo por vos y jugarmela por un futuro con VOS❤️</p>
+        </div>
+        
+        <div class="card" style="border: 2px solid var(--pink); box-shadow: 0 0 15px rgba(255, 77, 148, 0.4);">
+            <h2 style="margin: 0 0 20px 0; font-size: 1.8rem; letter-spacing: 1px;">Tiempo a tu lado</h2>
+            <div id="contador">
+                <div class="unit"><span id="days">0</span><label>Días</label></div>
+                <div class="unit"><span id="hours">0</span><label>Horas</label></div>
+                <div class="unit"><span id="minutes">0</span><label>Minutos</label></div>
+                <div class="unit"><span id="seconds">0</span><label>Segundos</label></div>
+            </div>
+            <p style="margin-top: 25px; color: var(--gold); font-weight: bold; font-size: 1.1rem; letter-spacing: 2px;">❤️ 14 / 02 / 2024 ❤️</p>
+        
+            <div class="dialogo-amor">
+                <b>Silene:</b> ¿Te hago feliz Braian?<br>
+                <span><b>Braian:</b> Todos los días de mi vida.</span>
+                </div>
+</div>
+        <div class="card">
+            <h3 style="color: var(--pink); margin-top: 0;">Nuestro Futuro💍</h3>
+            <p style="font-size: 0.95rem; line-height: 1.4;">No importa el tiempo que pase quiero que todo mi tiempo sea con vos! Quiero ese futuro con vos a tu lado no me imagino sin mi loquita linda❤️ la verdad que quiero que todos nuestro planes se cumplan quiero que estemos juntos que vivamos juntos que creemos esa familia juntos obviamente cuando ambos tengamos trabajos y estemos bien economicamente para poder viajar y hacer todo nuestro planes ojala se cumpla❤️ Te juro que quiero tantas cosas con vos en resumen TODO❤️ Sos la mujer de mi vida la futura madres de mis hijos! Gracias por darme tanta seguridad flaca por portarte bien conmigo y por enseñarme a amar a una sola persona❤️ TE AMO SILENE MI AMOR❤️ </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openGift() {
+        const intro = document.getElementById('intro-screen');
+        const letters = document.getElementById('letters-section');
+        for(let i=0; i<30; i++) { setTimeout(createHeart, i * 50); }
+        intro.style.opacity = '0';
+        setTimeout(() => {
+            intro.style.display = 'none';
+            letters.style.display = 'flex';
+        }, 1000);
+    }
+
+    function nextLetter(current) {
+        const currentCard = document.getElementById('l' + current);
+        currentCard.style.animation = 'floatUp 0.5s forwards';
+        setTimeout(() => {
+            currentCard.classList.remove('active');
+            document.getElementById('l' + (current + 1)).classList.add('active');
+        }, 400);
+    }
+
+    function showFinalContent() {
+        const letters = document.getElementById('letters-section');
+        const main = document.getElementById('main-content');
+        const musica = document.getElementById('musicaAmor');
+
+        musica.play().catch(error => {
+            console.log("El navegador bloqueó el autoplay.");
+        });
+
+        letters.style.opacity = '0';
+        setTimeout(() => {
+            letters.style.display = 'none';
+            main.style.display = 'flex';
+            setTimeout(() => {
+                main.style.opacity = '1';
+                startBearAnimation();
+            }, 50);
+        }, 800);
+    }
+
+    function startBearAnimation() {
+        const container = document.getElementById('bears-animation');
+        const text = document.getElementById('te-amo-text');
+        container.style.display = 'block';
+        let count = 0;
+        const interval = setInterval(() => {
+            shootHeart('left'); shootHeart('right'); count++;
+            if(count > 15) { clearInterval(interval); text.style.transition = 'opacity 1s'; text.style.opacity = '1'; }
+        }, 200);
+    }
+
+    function shootHeart(side) {
+        const container = document.getElementById('bears-animation');
+        const heart = document.createElement('div');
+        heart.className = 'shooting-heart'; heart.innerText = '❤️';
+        if(side === 'left') {
+            heart.style.left = '15%';
+            heart.animate([{ left: '15%', bottom: '30px', opacity: 1 }, { left: '50%', bottom: '80px', opacity: 0 }], { duration: 800 });
+        } else {
+            heart.style.right = '15%';
+            heart.animate([{ right: '15%', bottom: '30px', opacity: 1 }, { right: '50%', bottom: '80px', opacity: 0 }], { duration: 800 });
+        }
+        container.appendChild(heart);
+        setTimeout(() => heart.remove(), 800);
+    }
+
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.className = 'balloon';
+        const icons = ['❤️', '💖', '✨', '🌸', '💜'];
+        heart.innerText = icons[Math.floor(Math.random() * icons.length)];
+        heart.style.left = Math.random() * 95 + 'vw';
+        heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 4000);
+    }
+
+    const fechaInicio = new Date(2024, 1, 14, 0, 0, 0).getTime();
+    function actualizarContador() {
+        const ahora = new Date().getTime();
+        const diferencia = ahora - fechaInicio;
+        if (diferencia < 0) return;
+        document.getElementById("days").innerText = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+        document.getElementById("hours").innerText = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        document.getElementById("minutes").innerText = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+        document.getElementById("seconds").innerText = Math.floor((diferencia % (1000 * 60)) / 1000);
+    }
+    setInterval(actualizarContador, 1000);
+    actualizarContador();
+</script>
+
+</body>
+</html>
